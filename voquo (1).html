@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Voquo — Practice</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --nyu: #57068C;
+  --columbia: #1D4F91;
+  --nyu-light: #f0e6f8;
+  --columbia-light: #e6eef8;
+  --ink: #111111;
+  --muted: #666666;
+  --border: rgba(0,0,0,0.08);
+  --bg: #FAFAF8;
+  --white: #ffffff;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #080808;
+  color: white;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2.5rem;
+  background: rgba(8,8,8,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.nav-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  color: white;
+  letter-spacing: -0.5px;
+  text-decoration: none;
+}
+
+.nav-logo span {
+  background: linear-gradient(135deg, #c49fe0, #7aaee0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-right { display: flex; align-items: center; gap: 14px; }
+
+.nav-link {
+  font-size: 14px;
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.nav-link:hover { color: rgba(255,255,255,0.8); }
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.back-btn:hover { color: rgba(255,255,255,0.8); }
+
+/* MAIN LAYOUT */
+main {
+  flex: 1;
+  padding: 6rem 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* STEP INDICATOR */
+.step-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+.step-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  transition: background 0.3s;
+}
+.step-dot.active { background: #c49fe0; }
+.step-dot.done { background: rgba(196,159,224,0.4); }
+
+.step-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-left: 4px;
+}
+
+/* SCREENS */
+.screen { display: none; width: 100%; animation: fadeIn 0.35s ease; }
+.screen.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ONBOARDING */
+.onboard-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 24px;
+  padding: 2.5rem;
+}
+
+.onboard-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #c49fe0;
+  margin-bottom: 0.75rem;
+}
+
+.onboard-h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.8px;
+  color: white;
+  margin-bottom: 0.6rem;
+}
+
+.onboard-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.option-btn {
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.75);
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+  line-height: 1.4;
+}
+
+.option-btn:hover {
+  border-color: rgba(196,159,224,0.4);
+  background: rgba(196,159,224,0.08);
+  color: white;
+}
+
+.option-btn.selected {
+  border-color: #c49fe0;
+  background: rgba(196,159,224,0.12);
+  color: white;
+}
+
+.option-btn .opt-icon {
+  font-size: 20px;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.option-btn .opt-label { font-weight: 600; display: block; margin-bottom: 0.2rem; }
+.option-btn .opt-desc { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+/* MODE SELECTOR cards (bigger, side by side) */
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.mode-btn {
+  padding: 1.5rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.75);
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  line-height: 1.4;
+}
+
+.mode-btn:hover {
+  border-color: rgba(196,159,224,0.4);
+  background: rgba(196,159,224,0.08);
+  color: white;
+}
+
+.mode-btn.selected {
+  border-color: #c49fe0;
+  background: rgba(196,159,224,0.12);
+  color: white;
+}
+
+.mode-btn .mode-icon {
+  font-size: 36px;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.mode-btn .mode-label {
+  font-weight: 600;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 0.4rem;
+  color: white;
+}
+
+.mode-btn .mode-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.5;
+}
+
+.mode-btn.selected .mode-desc { color: rgba(255,255,255,0.6); }
+
+.mode-tag {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(125,211,176,0.12);
+  color: #7dd3b0;
+}
+
+.mode-tag.purple {
+  background: rgba(196,159,224,0.12);
+  color: #c49fe0;
+}
+
+.primary-btn {
+  height: 50px;
+  padding: 0 28px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #57068C, #1D4F91);
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s, transform 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.primary-btn:hover { opacity: 0.85; transform: scale(1.02); }
+.primary-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+.ghost-btn {
+  height: 50px;
+  padding: 0 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: rgba(255,255,255,0.55);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.ghost-btn:hover { border-color: rgba(255,255,255,0.3); color: white; }
+
+/* WARMUP / AI PRACTICE */
+.practice-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 24px;
+  padding: 2.5rem;
+  text-align: center;
+}
+
+.prompt-box {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.prompt-box::before {
+  content: '\201C';
+  font-family: 'DM Serif Display', serif;
+  font-size: 70px;
+  line-height: 0.5;
+  color: rgba(196,159,224,0.15);
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+}
+
+.prompt-text {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(18px, 3vw, 24px);
+  font-weight: 400;
+  line-height: 1.4;
+  color: white;
+  letter-spacing: -0.3px;
+}
+
+.prompt-hint {
+  font-size: 13px;
+  color: rgba(255,255,255,0.3);
+  margin-top: 0.75rem;
+}
+
+/* TIMER */
+.timer-ring {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1.5rem;
+}
+
+.timer-ring svg {
+  transform: rotate(-90deg);
+}
+
+.timer-ring circle {
+  fill: none;
+  stroke-width: 4;
+}
+
+.timer-ring .track { stroke: rgba(255,255,255,0.08); }
+.timer-ring .progress { stroke: #c49fe0; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+
+.timer-num {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 26px;
+  font-weight: 600;
+  color: white;
+  font-variant-numeric: tabular-nums;
+}
+
+/* AI CHAT */
+.ai-bubble {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.ai-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(87,6,140,0.6), rgba(29,79,145,0.6));
+  border: 1px solid rgba(196,159,224,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.ai-text {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px 12px 12px 2px;
+  padding: 0.875rem 1rem;
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.6;
+  max-width: 480px;
+}
+
+.typing-dots span {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  animation: blink 1.2s ease-in-out infinite;
+  margin: 0 2px;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0.3; }
+  40% { opacity: 1; }
+}
+
+/* RECORD BUTTON */
+.record-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.record-btn {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  transition: all 0.15s;
+  position: relative;
+}
+
+.record-btn:hover {
+  border-color: #c49fe0;
+  background: rgba(196,159,224,0.1);
+  transform: scale(1.05);
+}
+
+.record-btn.recording {
+  border-color: #e07a7a;
+  background: rgba(224,122,122,0.1);
+  animation: recordPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes recordPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(224,122,122,0.3); }
+  50% { box-shadow: 0 0 0 16px rgba(224,122,122,0); }
+}
+
+.record-label {
+  font-size: 13px;
+  color: rgba(255,255,255,0.35);
+  text-align: center;
+}
+
+/* TEXT RESPONSE AREA */
+.text-response-wrap {
+  text-align: left;
+  margin-top: 1.5rem;
+}
+
+.response-textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 1.25rem;
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  color: white;
+  line-height: 1.7;
+  resize: vertical;
+  min-height: 140px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.response-textarea::placeholder {
+  color: rgba(255,255,255,0.2);
+}
+
+.response-textarea:focus {
+  border-color: rgba(196,159,224,0.4);
+}
+
+.textarea-hint {
+  font-size: 12px;
+  color: rgba(255,255,255,0.2);
+  margin-top: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.char-count {
+  font-size: 12px;
+  color: rgba(255,255,255,0.2);
+  text-align: right;
+  margin-top: 0.4rem;
+}
+
+/* RESULTS */
+.results-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 24px;
+  padding: 2.5rem;
+}
+
+.score-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.score-item {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 1.25rem 1rem;
+  text-align: center;
+}
+
+.score-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.score-num.good { color: #7dd3b0; }
+.score-num.ok { color: #f0c27d; }
+.score-num.great { color: #c49fe0; }
+
+.score-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.feedback-box {
+  background: rgba(125,211,176,0.07);
+  border: 1px solid rgba(125,211,176,0.2);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.feedback-box h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #7dd3b0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+
+.feedback-box p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.7;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* MATCH SCREEN */
+.match-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.match-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  background: rgba(196,159,224,0.12);
+  border: 1px solid rgba(196,159,224,0.25);
+  border-radius: 999px;
+  font-size: 12px;
+  color: #c49fe0;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.live-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #7dd3b0;
+  animation: livePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.match-avatars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.match-avatar {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  font-weight: 600;
+  border: 2px solid rgba(255,255,255,0.15);
+}
+
+.match-you { background: linear-gradient(135deg, rgba(87,6,140,0.5), rgba(29,79,145,0.5)); }
+.match-them { background: rgba(255,255,255,0.06); }
+
+.vs-divider {
+  font-size: 11px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+footer {
+  background: transparent;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding: 1.25rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 18px;
+  color: rgba(255,255,255,0.2);
+}
+
+.footer-note { font-size: 12px; color: rgba(255,255,255,0.12); }
+
+/* VIDEO PREVIEW */
+.video-preview-wrap { margin: 1.5rem 0; }
+
+.video-frame {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto 0.875rem;
+  aspect-ratio: 4/3;
+  background: #000;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.video-sim-bg {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at 50% 40%, #14101e 0%, #0a0a0f 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.face-placeholder {
+  width: 110px;
+  height: 140px;
+  border: 2px dashed rgba(196,159,224,0.2);
+  border-radius: 60px 60px 50px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  opacity: 0.3;
+}
+
+.video-overlay { position: absolute; inset: 0; pointer-events: none; }
+
+.video-grid-h {
+  position: absolute;
+  top: 33.3%; left: 0; right: 0;
+  border-top: 1px solid rgba(196,159,224,0.07);
+}
+.video-grid-h2 {
+  position: absolute;
+  top: 66.6%; left: 0; right: 0;
+  border-top: 1px solid rgba(196,159,224,0.07);
+}
+.video-grid-v {
+  position: absolute;
+  left: 33.3%; top: 0; bottom: 0;
+  border-left: 1px solid rgba(196,159,224,0.07);
+}
+.video-grid-v2 {
+  position: absolute;
+  left: 66.6%; top: 0; bottom: 0;
+  border-left: 1px solid rgba(196,159,224,0.07);
+}
+
+.video-live-badge {
+  position: absolute;
+  top: 10px; left: 10px;
+  display: none;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: rgba(210,50,50,0.85);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: white;
+  text-transform: uppercase;
+  backdrop-filter: blur(4px);
+}
+
+.video-ai-indicator {
+  position: absolute;
+  bottom: 10px; right: 10px;
+  font-size: 11px;
+  color: rgba(196,159,224,0.75);
+  background: rgba(0,0,0,0.55);
+  padding: 3px 10px;
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+}
+
+.eye-contact-meter {
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto 0.625rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.4);
+}
+
+.eye-track-bar {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.eye-track-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #c49fe0, #7aaee0);
+  border-radius: 999px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+.video-tip {
+  font-size: 12px;
+  color: rgba(255,255,255,0.25);
+  text-align: center;
+  padding: 0.25rem 0 0.5rem;
+}
+
+/* 5 Ps VOICE ANALYSIS */
+.five-p-section { margin-top: 1.5rem; }
+
+.section-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.25);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.75rem;
+}
+
+.five-p-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+}
+
+.p-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 0.875rem 0.5rem;
+  text-align: center;
+}
+
+.p-icon { font-size: 16px; display: block; margin-bottom: 0.3rem; }
+
+.p-name {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.p-score {
+  font-family: 'DM Serif Display', serif;
+  font-size: 18px;
+  font-weight: 400;
+  display: block;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.p-score.good { color: #7dd3b0; }
+.p-score.ok   { color: #f0c27d; }
+.p-score.great { color: #c49fe0; }
+
+.p-hint {
+  font-size: 10px;
+  color: rgba(255,255,255,0.22);
+  line-height: 1.3;
+}
+
+/* VIDEO ANALYSIS RESULTS */
+.video-analysis-section { margin-bottom: 1.5rem; }
+
+.video-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.video-metric-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 1.125rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.vm-icon { font-size: 26px; flex-shrink: 0; }
+.vm-info { flex: 1; min-width: 0; }
+
+.vm-label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.28);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.2rem;
+}
+
+.vm-value {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: white;
+  line-height: 1;
+  margin-bottom: 0.2rem;
+}
+
+.vm-sub { font-size: 11px; color: rgba(255,255,255,0.3); }
+
+@media (max-width: 600px) {
+  nav { padding: 1rem 1.25rem; }
+  main { padding: 5rem 1rem 2rem; }
+  .onboard-card, .practice-card, .results-card { padding: 1.5rem; }
+  .score-row { grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+  footer { padding: 1rem 1.25rem; }
+  .mode-grid { grid-template-columns: 1fr; }
+  .five-p-grid { grid-template-columns: repeat(3, 1fr); }
+  .video-metrics-grid { grid-template-columns: 1fr; }
+}
+</style>
+<script type='text/javascript' src='https://api.netlify.com/XyXPruVtIfz1MykXKwdHjg9SD6WCAEBZEwKpz8RpUmmJlhtwKDEjVuWP6jDJWj98Ys0FX2AR_f8n4eexDGsfuJLeGr4Kiw8sM9c3RKgKaUTiZfYhYaqR96X3o-5erHOxy3fpxSb6gyjyIjwxZu_Pq5DvKLw2g0fGx0Xl84k3YkIla92RyFALPnPBJIZJkX1T5x6ISny3jhNoYwliGaEANfO3fc5UZK9BVR7L9uTZfgecD5QG4MYlOqOEHG43r_WTTKZd7qjRW3y13Y1gNVSd5fAfgWkS2UmE8V6IQ8aVi0tWPkG7PQFIEjItwueIBwwuIibG5AavckJfRyYJlFZRuC_d8C3JtwzOoWp4nW1hTZ62jmxkkgj9t990ue5WZ-eirFxWq3RFQMh30lizo3n6_8uOG81AmZGXm8DIwwGHrDsHYLfXhLXVYbSuf3TGuR0Fb0-ErEkEsbxYr1oWKZIaXRXgcYm6p8t-FI5gjDgxJC6lXGFn2jvwBc_EJsNATZhRyA89bRVFYnO3ICKELFEm'></script></head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">vo<span>quo</span></a>
+  <div class="nav-right">
+    <a href="index.html" class="back-btn">← Back to home</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+  <!-- STEP BAR -->
+  <div class="step-bar" id="stepBar">
+    <div class="step-dot active" id="dot1"></div>
+    <div class="step-dot" id="dot2"></div>
+    <div class="step-dot" id="dot3"></div>
+    <div class="step-dot" id="dot4"></div>
+    <div class="step-dot" id="dot5"></div>
+    <span class="step-label" id="stepLabel">Choose your style</span>
+  </div>
+
+  <!-- SCREEN 1: MODE SELECT (new) -->
+  <div class="screen active" id="screen1">
+    <div class="onboard-card">
+      <div class="onboard-eyebrow">Welcome to Voquo</div>
+      <h2 class="onboard-h2">How would you like to practice today?</h2>
+      <p class="onboard-sub">Pick what feels right. You can always switch it up next session.</p>
+
+      <div class="mode-grid">
+        <button class="mode-btn" onclick="selectMode(this, 'text')">
+          <span class="mode-icon">✍️</span>
+          <span class="mode-label">Type it out</span>
+          <span class="mode-desc">Write your responses. No mic, no pressure — great if you're warming up to speaking.</span>
+          <span class="mode-tag">Comfortable start</span>
+        </button>
+        <button class="mode-btn" onclick="selectMode(this, 'voice')">
+          <span class="mode-icon">🎙️</span>
+          <span class="mode-label">Speak it out</span>
+          <span class="mode-desc">Practice out loud with AI feedback on your pace, clarity, and delivery.</span>
+          <span class="mode-tag purple">Full experience</span>
+        </button>
+        <button class="mode-btn" onclick="selectMode(this, 'video')">
+          <span class="mode-icon">📹</span>
+          <span class="mode-label">See yourself</span>
+          <span class="mode-desc">Camera + voice. AI tracks eye contact, expressions, and the 5 Ps of your delivery.</span>
+          <span class="mode-tag purple">Full coaching</span>
+        </button>
+      </div>
+
+      <button class="primary-btn" id="modeNext" onclick="goToScreen(2)" disabled>
+        Continue →
+      </button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: LEVEL SELECT -->
+  <div class="screen" id="screen2">
+    <div class="onboard-card">
+      <div class="onboard-eyebrow">Step 1 of 3</div>
+      <h2 class="onboard-h2">Where are you starting?</h2>
+      <p class="onboard-sub">No judgment here. Pick the one that feels most honest.</p>
+
+      <div class="options-grid">
+        <button class="option-btn" onclick="selectLevel(this, 'beginner')">
+          <span class="opt-icon">🌱</span>
+          <span class="opt-label">Just starting</span>
+          <span class="opt-desc">Speaking up feels hard. I usually stay quiet.</span>
+        </button>
+        <button class="option-btn" onclick="selectLevel(this, 'some')">
+          <span class="opt-icon">🔥</span>
+          <span class="opt-label">Some experience</span>
+          <span class="opt-desc">I can do it, but fillers and nerves get me.</span>
+        </button>
+        <button class="option-btn" onclick="selectLevel(this, 'confident')">
+          <span class="opt-icon">⚡</span>
+          <span class="opt-label">Pretty confident</span>
+          <span class="opt-desc">I want sharper edges and faster thinking.</span>
+        </button>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="ghost-btn" onclick="goToScreen(1)">← Back</button>
+        <button class="primary-btn" id="levelNext" onclick="goToScreen(3)" disabled>
+          Next — Warm up →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: WARMUP (text or voice, based on mode) -->
+  <div class="screen" id="screen3">
+    <div class="practice-card">
+      <div class="onboard-eyebrow">Step 2 of 3 — Warm-up</div>
+      <h2 class="onboard-h2" style="font-family:'DM Serif Display',serif; font-size:clamp(20px,3.5vw,30px); font-weight:400; letter-spacing:-0.5px; margin-bottom:0.5rem;">
+        Practice with your AI partner
+      </h2>
+      <p style="font-size:14px; color:rgba(255,255,255,0.4); margin-bottom:1.5rem;">
+        No pressure. This is just to get you warmed up.
+      </p>
+
+      <!-- AI intro bubble -->
+      <div class="ai-bubble">
+        <div class="ai-avatar">🤖</div>
+        <div class="ai-text" id="aiMessage">
+          Hey! I'm your Voquo AI partner. I'll give you a quick prompt — respond however feels right for you. Ready when you are.
+        </div>
+      </div>
+
+      <!-- Prompt box -->
+      <div class="prompt-box" id="promptBox" style="display:none;">
+        <p class="prompt-text" id="promptText"></p>
+        <p class="prompt-hint" id="promptHint">Take your time — there's no right answer.</p>
+      </div>
+
+      <!-- VOICE MODE: timer + record button -->
+      <div id="voiceWrap">
+        <div class="timer-ring" id="timerRing" style="display:none;">
+          <svg width="100" height="100">
+            <circle class="track" cx="50" cy="50" r="44"/>
+            <circle class="progress" id="timerCircle" cx="50" cy="50" r="44"
+              stroke-dasharray="276.46" stroke-dashoffset="0"/>
+          </svg>
+          <div class="timer-num" id="timerNum">30</div>
+        </div>
+
+        <div class="record-area">
+          <button class="record-btn" id="recordBtn" onclick="toggleRecord()">🎙️</button>
+          <div class="record-label" id="recordLabel">Tap to start speaking</div>
+        </div>
+      </div>
+
+      <!-- TEXT MODE: textarea + submit -->
+      <div class="text-response-wrap" id="textWrap" style="display:none;">
+        <textarea
+          class="response-textarea"
+          id="textResponse"
+          placeholder="Type your response here… take your time. No right answer."
+          oninput="onTextInput()"
+        ></textarea>
+        <div class="char-count"><span id="charCount">0</span> words</div>
+        <div class="textarea-hint">Aim for a few sentences — about what you'd say in 30 seconds out loud.</div>
+        <button class="primary-btn" id="textSubmitBtn" onclick="submitTextResponse()" disabled>
+          Submit response →
+        </button>
+      </div>
+
+      <!-- VIDEO MODE: camera preview + record -->
+      <div id="videoWrap" style="display:none;">
+        <div class="video-preview-wrap">
+          <div class="video-frame">
+            <div class="video-sim-bg">
+              <div class="face-placeholder">👤</div>
+            </div>
+            <div class="video-overlay">
+              <div class="video-grid-h"></div>
+              <div class="video-grid-h2"></div>
+              <div class="video-grid-v"></div>
+              <div class="video-grid-v2"></div>
+              <div class="video-live-badge" id="videoLiveBadge">
+                <div class="live-dot"></div> REC
+              </div>
+              <div class="video-ai-indicator" id="videoAiIndicator">AI ready</div>
+            </div>
+          </div>
+          <div class="eye-contact-meter">
+            <span>👁️ Eye contact</span>
+            <div class="eye-track-bar"><div class="eye-track-fill" id="eyeTrackFill"></div></div>
+            <span id="eyeContactLive" style="min-width:34px; text-align:right;">–</span>
+          </div>
+          <div class="video-tip">💡 Look at the camera lens, not the screen, for the best eye contact score</div>
+        </div>
+
+        <div class="record-area">
+          <button class="record-btn" id="videoRecordBtn" onclick="toggleVideoRecord()">🎙️</button>
+          <div class="record-label" id="videoRecordLabel">Tap to start recording</div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem; display:flex; gap:10px; justify-content:center;">
+        <button class="ghost-btn" onclick="goToScreen(2)">← Back</button>
+        <button class="primary-btn" id="warmupNext" onclick="goToScreen(4)" style="display:none;">
+          See results →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: WARMUP RESULTS -->
+  <div class="screen" id="screen4">
+    <div class="results-card">
+      <div class="onboard-eyebrow">Warm-up complete</div>
+      <h2 style="font-family:'DM Serif Display',serif; font-size:clamp(24px,3.5vw,32px); font-weight:400; letter-spacing:-0.5px; margin-bottom:0.5rem; color:white;">
+        Good work. Here's what we heard.
+      </h2>
+      <p style="font-size:14px; color:rgba(255,255,255,0.4); margin-bottom:0;">
+        This is your baseline — every session it gets better.
+      </p>
+
+      <div class="score-row">
+        <div class="score-item">
+          <div class="score-num great" id="scoreFillers">4</div>
+          <div class="score-label" id="fillersLabel">Filler words</div>
+        </div>
+        <div class="score-item">
+          <div class="score-num good" id="scorePace">148</div>
+          <div class="score-label" id="paceLabel">WPM pace</div>
+        </div>
+        <div class="score-item">
+          <div class="score-num ok" id="scoreClarity">72%</div>
+          <div class="score-label">Clarity score</div>
+        </div>
+      </div>
+
+      <div class="feedback-box">
+        <h4>AI feedback</h4>
+        <p id="aiFeedback">You held your ground and didn't trail off at the end — that's harder than it sounds. Try cutting the "ums" before your key points: a half-second pause sounds way more confident than a filler word.</p>
+      </div>
+
+      <!-- Video analysis — shown only in video mode -->
+      <div class="video-analysis-section" id="videoAnalysisSection" style="display:none;">
+        <div class="section-eyebrow">📹 Video analysis</div>
+        <div class="video-metrics-grid">
+          <div class="video-metric-card">
+            <div class="vm-icon">👁️</div>
+            <div class="vm-info">
+              <div class="vm-label">Eye contact</div>
+              <div class="vm-value" id="eyeContactScore">78%</div>
+              <div class="vm-sub" id="eyeContactSub">Held through most of response</div>
+            </div>
+          </div>
+          <div class="video-metric-card">
+            <div class="vm-icon">😊</div>
+            <div class="vm-info">
+              <div class="vm-label">Facial engagement</div>
+              <div class="vm-value" id="facialScore">Neutral</div>
+              <div class="vm-sub" id="facialSub">Try more expression variation</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 Ps voice breakdown — shown in voice and video modes -->
+      <div class="five-p-section" id="fivePSection" style="display:none;">
+        <div class="section-eyebrow">🎙️ Voice — the 5 Ps</div>
+        <div class="five-p-grid">
+          <div class="p-card">
+            <span class="p-icon">⏱️</span>
+            <span class="p-name">Pace</span>
+            <span class="p-score good" id="pPace">148</span>
+            <span class="p-hint">wpm — Steady</span>
+          </div>
+          <div class="p-card">
+            <span class="p-icon">🎵</span>
+            <span class="p-name">Pitch</span>
+            <span class="p-score great" id="pPitch">Varied</span>
+            <span class="p-hint">Natural range</span>
+          </div>
+          <div class="p-card">
+            <span class="p-icon">📢</span>
+            <span class="p-name">Power</span>
+            <span class="p-score ok" id="pPower">Soft</span>
+            <span class="p-hint">Volume low</span>
+          </div>
+          <div class="p-card">
+            <span class="p-icon">⏸️</span>
+            <span class="p-name">Pause</span>
+            <span class="p-score great" id="pPause">2×</span>
+            <span class="p-hint">Well placed</span>
+          </div>
+          <div class="p-card">
+            <span class="p-icon">✨</span>
+            <span class="p-name">Polish</span>
+            <span class="p-score good" id="pPolish">72%</span>
+            <span class="p-hint">Solid delivery</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="ghost-btn" onclick="goToScreen(3)">Try again</button>
+        <button class="primary-btn" onclick="goToScreen(5)">
+          Match me with a stranger →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 5: LIVE MATCH -->
+  <div class="screen" id="screen5">
+    <div class="practice-card">
+      <div class="match-header">
+        <div class="match-badge">
+          <div class="live-dot"></div>
+          Live match
+        </div>
+        <h2 style="font-family:'DM Serif Display',serif; font-size:clamp(22px,3.5vw,30px); font-weight:400; letter-spacing:-0.5px; color:white; margin-bottom:0.5rem;">
+          You're matched.
+        </h2>
+        <p style="font-size:14px; color:rgba(255,255,255,0.4);">
+          Same prompt. No wrong answers.
+        </p>
+      </div>
+
+      <div class="match-avatars">
+        <div>
+          <div class="match-avatar match-you" style="margin:0 auto 0.5rem;">You</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.3); text-align:center;">You</div>
+        </div>
+        <div class="vs-divider">vs</div>
+        <div>
+          <div class="match-avatar match-them" style="margin:0 auto 0.5rem;">👤</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.3); text-align:center;">Anonymous</div>
+        </div>
+      </div>
+
+      <div class="prompt-box">
+        <p class="prompt-text" id="matchPromptText">
+          Tell me about a time you completely changed your mind about something.
+        </p>
+        <p class="prompt-hint" id="matchPromptHint">You'll each respond — then vote on whose answer felt most genuine.</p>
+      </div>
+
+      <!-- VOICE MODE for match -->
+      <div id="matchVoiceWrap">
+        <div class="record-area">
+          <button class="record-btn" id="matchRecordBtn" onclick="toggleMatchRecord()">🎙️</button>
+          <div class="record-label" id="matchRecordLabel">Tap when ready to speak</div>
+        </div>
+      </div>
+
+      <!-- TEXT MODE for match -->
+      <div class="text-response-wrap" id="matchTextWrap" style="display:none;">
+        <textarea
+          class="response-textarea"
+          id="matchTextResponse"
+          placeholder="Type your response here…"
+          oninput="onMatchTextInput()"
+        ></textarea>
+        <div class="char-count"><span id="matchCharCount">0</span> words</div>
+        <div class="textarea-hint">Write whatever comes naturally.</div>
+        <button class="primary-btn" id="matchTextSubmitBtn" onclick="submitMatchText()" disabled>
+          Submit →
+        </button>
+      </div>
+
+      <div style="margin-top:1.5rem; display:flex; gap:10px; justify-content:center;">
+        <button class="ghost-btn" onclick="goToScreen(4)">← Back</button>
+        <button class="primary-btn" id="matchNext" onclick="endSession()" style="display:none;">
+          End session →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 6: SESSION DONE -->
+  <div class="screen" id="screen6">
+    <div class="results-card" style="text-align:center;">
+      <div style="font-size:48px; margin-bottom:1rem;">🎉</div>
+      <div class="onboard-eyebrow" style="justify-content:center; display:flex;">Session complete</div>
+      <h2 style="font-family:'DM Serif Display',serif; font-size:clamp(24px,4vw,38px); font-weight:400; letter-spacing:-0.8px; color:white; margin-bottom:0.5rem;">
+        That's a rep.
+      </h2>
+      <p style="font-size:15px; color:rgba(255,255,255,0.4); margin-bottom:2rem;">
+        Every session adds up. Come back tomorrow and watch the trend line move.
+      </p>
+
+      <div class="score-row" style="margin-bottom:2rem;">
+        <div class="score-item">
+          <div class="score-num great">2</div>
+          <div class="score-label">Sessions today</div>
+        </div>
+        <div class="score-item">
+          <div class="score-num good">↓38%</div>
+          <div class="score-label">Filler words</div>
+        </div>
+        <div class="score-item">
+          <div class="score-num ok">Day 1</div>
+          <div class="score-label">Streak</div>
+        </div>
+      </div>
+
+      <div class="btn-row" style="justify-content:center;">
+        <button class="ghost-btn" onclick="restartSession()">Start another round</button>
+        <a href="index.html" class="primary-btn" style="text-decoration:none;">← Back to home</a>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-logo">voquo</div>
+  <div class="footer-note">Built for the back row · 2026</div>
+</footer>
+
+<script>
+const PROMPTS = [
+  "Describe your morning routine — but make it sound like you're pitching it to investors.",
+  "What's one piece of advice you'd give your freshman-year self?",
+  "Tell me about a time you completely changed your mind about something.",
+  "If you had to explain what you study to a curious 10-year-old, how would you do it?",
+  "What's something you're surprisingly good at that no one would guess?",
+  "Describe the best meal you've ever had and why it stuck with you.",
+  "If you could fix one thing about your university, what would it be and how?",
+  "Talk about a moment where you had to speak up even though it was uncomfortable.",
+];
+
+let practiceMode = null; // 'text', 'voice', or 'video'
+let selectedLevel = null;
+let recordTimer = null;
+let recordSeconds = 30;
+let isRecording = false;
+let warmupDone = false;
+let matchRecording = false;
+let matchTimer = null;
+let matchSeconds = 30;
+let videoRecording = false;
+let videoTimer = null;
+let videoSeconds = 30;
+let eyeInterval = null;
+let eyeFinalPct = 78;
+
+// ── Mode selection ──────────────────────────────────────────────
+function selectMode(btn, mode) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  practiceMode = mode;
+  document.getElementById('modeNext').disabled = false;
+}
+
+// ── Level selection ─────────────────────────────────────────────
+function selectLevel(btn, level) {
+  document.querySelectorAll('#screen2 .option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedLevel = level;
+  document.getElementById('levelNext').disabled = false;
+
+  const feedbackMap = {
+    beginner: "You paused well and didn't rush — that takes courage at your level. Your biggest unlock: cut the apologetic opener. Start with your first real thought, not 'I don't know if this is right, but…'",
+    some: "Strong start and good energy. Watch the trailing off at the end of sentences — your voice drops right when the point lands. Try keeping your chin up and finishing strong.",
+    confident: "Sharp and clear. The only thing holding you back is over-structuring — you front-loaded caveats before your actual point. Lead with the idea, add nuance after.",
+  };
+  const videoFeedbackMap = {
+    beginner: "Getting on camera takes real courage — you showed up. Your eye contact improved as you got comfortable. Key focus: fight the urge to look away when thinking. Pause, hold your gaze at the camera, then speak.",
+    some: "Solid presence on camera. Eye contact was consistent and your facial expressions tracked with your words. The 5 Ps show a good pace — let your pitch vary more to carry emotion.",
+    confident: "Strong on-camera presence. Your eye contact score was excellent and you used pauses with intention. Watch your power — volume dropped at the ends of sentences. Finish each thought strong.",
+  };
+
+  const fb = practiceMode === 'video' ? videoFeedbackMap[level] : feedbackMap[level];
+  document.getElementById('aiFeedback').textContent = fb;
+
+  const fillerMap = { beginner: 7, some: 4, confident: 2 };
+  const clarityMap = { beginner: '58%', some: '72%', confident: '88%' };
+  document.getElementById('scoreFillers').textContent = fillerMap[level];
+  document.getElementById('scoreClarity').textContent = clarityMap[level];
+
+  set5PScores(level);
+}
+
+// ── Navigation ──────────────────────────────────────────────────
+function goToScreen(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen' + n).classList.add('active');
+  updateStepBar(n);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (n === 3) setupWarmup();
+  if (n === 4) setupResults();
+  if (n === 5) setupMatch();
+}
+
+function updateStepBar(n) {
+  const labels = ['', 'Choose your style', 'Set your level', 'Warm-up', 'Your results', 'Live match', ''];
+  for (let i = 1; i <= 5; i++) {
+    const dot = document.getElementById('dot' + i);
+    dot.className = 'step-dot';
+    if (i < n) dot.classList.add('done');
+    else if (i === n) dot.classList.add('active');
+  }
+  document.getElementById('stepLabel').textContent = labels[n] || '';
+}
+
+// ── Warmup screen setup ─────────────────────────────────────────
+function setupWarmup() {
+  isRecording = false;
+  warmupDone = false;
+  recordSeconds = 30;
+  videoRecording = false;
+  videoSeconds = 30;
+  clearInterval(recordTimer);
+  clearInterval(videoTimer);
+  clearInterval(eyeInterval);
+
+  // Reset shared UI
+  document.getElementById('promptBox').style.display = 'none';
+  document.getElementById('warmupNext').style.display = 'none';
+
+  const aiMsg = document.getElementById('aiMessage');
+  const modeLabel = practiceMode === 'text' ? 'write' : 'say';
+  aiMsg.innerHTML = `Hey! I'm your Voquo AI partner. I'll give you a quick prompt — just ${modeLabel} whatever comes to mind, like you're talking to a friend. Ready when you are.`;
+
+  // Show/hide correct input mode
+  const voiceWrap = document.getElementById('voiceWrap');
+  const textWrap  = document.getElementById('textWrap');
+  const videoWrap = document.getElementById('videoWrap');
+
+  voiceWrap.style.display = 'none';
+  textWrap.style.display  = 'none';
+  videoWrap.style.display = 'none';
+
+  if (practiceMode === 'voice') {
+    voiceWrap.style.display = 'block';
+    document.getElementById('recordBtn').classList.remove('recording');
+    document.getElementById('recordBtn').textContent = '🎙️';
+    document.getElementById('recordLabel').textContent = 'Tap to start speaking';
+    document.getElementById('timerRing').style.display = 'none';
+    document.getElementById('promptHint').textContent = 'Speak for 30 seconds. No right answer — just go.';
+  } else if (practiceMode === 'video') {
+    videoWrap.style.display = 'block';
+    document.getElementById('videoRecordBtn').classList.remove('recording');
+    document.getElementById('videoRecordBtn').textContent = '🎙️';
+    document.getElementById('videoRecordLabel').textContent = 'Tap to start recording';
+    document.getElementById('videoLiveBadge').style.display = 'none';
+    document.getElementById('videoAiIndicator').textContent = 'AI ready';
+    document.getElementById('eyeTrackFill').style.width = '0%';
+    document.getElementById('eyeContactLive').textContent = '–';
+    document.getElementById('promptHint').textContent = 'Look at the camera and speak naturally. AI tracks eye contact, expressions, and voice.';
+    aiMsg.innerHTML = `Hey! I'm your Voquo AI partner. I'll give you a quick prompt — speak naturally and look at the camera. I'll track your eye contact and voice delivery. Ready when you are.`;
+  } else {
+    textWrap.style.display = 'block';
+    document.getElementById('textResponse').value = '';
+    document.getElementById('charCount').textContent = '0';
+    document.getElementById('textSubmitBtn').disabled = true;
+    document.getElementById('promptHint').textContent = 'Write your response below. A few sentences is plenty.';
+  }
+
+  // Update results labels
+  if (practiceMode === 'text') {
+    document.getElementById('fillersLabel').textContent = 'Filler phrases';
+    document.getElementById('paceLabel').textContent = 'Word count';
+  } else {
+    document.getElementById('fillersLabel').textContent = 'Filler words';
+    document.getElementById('paceLabel').textContent = 'WPM pace';
+  }
+
+  setTimeout(() => {
+    const prompt = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
+    document.getElementById('promptText').textContent = prompt;
+    document.getElementById('promptBox').style.display = 'block';
+    let actionWord;
+    if (practiceMode === 'text')  actionWord = 'prompt 👇 Write your response below.';
+    else if (practiceMode === 'video') actionWord = "prompt 👇 Hit the record button when you're ready — and look at the camera!";
+    else actionWord = "prompt 👇 Hit the mic when you're ready. I'll listen.";
+    aiMsg.innerHTML = `Here's your ${actionWord}`;
+  }, 1200);
+}
+
+// ── Text mode input ─────────────────────────────────────────────
+function onTextInput() {
+  const val = document.getElementById('textResponse').value.trim();
+  const words = val ? val.split(/\s+/).length : 0;
+  document.getElementById('charCount').textContent = words;
+  document.getElementById('textSubmitBtn').disabled = words < 5;
+}
+
+function submitTextResponse() {
+  warmupDone = true;
+  document.getElementById('textSubmitBtn').disabled = true;
+  document.getElementById('textSubmitBtn').textContent = 'Submitted ✓';
+
+  const words = document.getElementById('textResponse').value.trim().split(/\s+/).length;
+
+  // Update text-mode scores
+  document.getElementById('scorePace').textContent = words;
+  const fillers = Math.max(0, Math.floor(words / 20));
+  document.getElementById('scoreFillers').textContent = fillers;
+  const clarity = Math.min(95, 60 + words);
+  document.getElementById('scoreClarity').textContent = clarity + '%';
+
+  const aiMsg = document.getElementById('aiMessage');
+  aiMsg.innerHTML = '<span class="typing-dots"><span></span><span></span><span></span></span>';
+
+  setTimeout(() => {
+    aiMsg.textContent = 'Nice work! I caught a few things worth talking about. Tap below to see your feedback.';
+    document.getElementById('warmupNext').style.display = 'inline-flex';
+  }, 1600);
+}
+
+// ── Voice mode ──────────────────────────────────────────────────
+function toggleRecord() {
+  if (warmupDone) return;
+  if (!isRecording) {
+    startRecording();
+  } else {
+    stopRecording();
+  }
+}
+
+function startRecording() {
+  isRecording = true;
+  recordSeconds = 30;
+  const btn = document.getElementById('recordBtn');
+  btn.classList.add('recording');
+  btn.textContent = '⏹️';
+  document.getElementById('recordLabel').textContent = 'Recording… tap to stop early';
+  document.getElementById('timerRing').style.display = 'block';
+  updateTimerCircle(30, 30);
+
+  recordTimer = setInterval(() => {
+    recordSeconds--;
+    document.getElementById('timerNum').textContent = recordSeconds;
+    updateTimerCircle(recordSeconds, 30);
+    if (recordSeconds <= 0) stopRecording();
+  }, 1000);
+}
+
+function stopRecording() {
+  clearInterval(recordTimer);
+  isRecording = false;
+  warmupDone = true;
+  const btn = document.getElementById('recordBtn');
+  btn.classList.remove('recording');
+  btn.textContent = '✅';
+  document.getElementById('recordLabel').textContent = 'Nice! Analyzing your response…';
+  document.getElementById('timerRing').style.display = 'none';
+
+  document.getElementById('aiMessage').innerHTML = '<span class="typing-dots"><span></span><span></span><span></span></span>';
+
+  setTimeout(() => {
+    document.getElementById('aiMessage').textContent = 'Got it! I caught a few things worth talking about. Tap below to see your feedback.';
+    document.getElementById('warmupNext').style.display = 'inline-flex';
+    document.getElementById('recordLabel').textContent = 'Done! See your results →';
+  }, 2000);
+}
+
+function updateTimerCircle(current, total) {
+  const circumference = 276.46;
+  const offset = circumference * (1 - current / total);
+  document.getElementById('timerCircle').style.strokeDashoffset = offset;
+}
+
+// ── Video record mode ───────────────────────────────────────────
+function toggleVideoRecord() {
+  if (warmupDone) return;
+  if (!videoRecording) {
+    startVideoRecord();
+  } else {
+    stopVideoRecord();
+  }
+}
+
+function startVideoRecord() {
+  videoRecording = true;
+  videoSeconds = 30;
+  const btn = document.getElementById('videoRecordBtn');
+  btn.classList.add('recording');
+  btn.textContent = '⏹️';
+  document.getElementById('videoRecordLabel').textContent = 'Recording… tap to stop early';
+  document.getElementById('videoLiveBadge').style.display = 'flex';
+  document.getElementById('videoAiIndicator').textContent = '🔴 Analyzing…';
+
+  let eyePct = Math.random() * 20 + 30;
+  eyeInterval = setInterval(() => {
+    eyePct = Math.min(96, eyePct + Math.random() * 6 + 1);
+    eyeFinalPct = Math.floor(eyePct);
+    document.getElementById('eyeTrackFill').style.width = eyePct + '%';
+    document.getElementById('eyeContactLive').textContent = eyeFinalPct + '%';
+  }, 700);
+
+  videoTimer = setInterval(() => {
+    videoSeconds--;
+    document.getElementById('videoRecordLabel').textContent = `Recording… ${videoSeconds}s`;
+    if (videoSeconds <= 0) stopVideoRecord();
+  }, 1000);
+}
+
+function stopVideoRecord() {
+  clearInterval(videoTimer);
+  clearInterval(eyeInterval);
+  videoRecording = false;
+  warmupDone = true;
+  const btn = document.getElementById('videoRecordBtn');
+  btn.classList.remove('recording');
+  btn.textContent = '✅';
+  document.getElementById('videoRecordLabel').textContent = 'Analyzing recording…';
+  document.getElementById('videoLiveBadge').style.display = 'none';
+  document.getElementById('videoAiIndicator').textContent = '✓ Done';
+
+  document.getElementById('aiMessage').innerHTML = '<span class="typing-dots"><span></span><span></span><span></span></span>';
+
+  setTimeout(() => {
+    document.getElementById('aiMessage').textContent = 'Analyzed your video and voice. Solid eye contact — I\'ll show you your full breakdown.';
+    document.getElementById('warmupNext').style.display = 'inline-flex';
+    document.getElementById('videoRecordLabel').textContent = 'Done! See your analysis →';
+  }, 2000);
+}
+
+// ── 5 Ps scoring ────────────────────────────────────────────────
+function set5PScores(level) {
+  const lvl = level || selectedLevel || 'some';
+
+  const data = {
+    beginner: { pace:'112', paceClass:'ok', paceHint:'wpm — Slow down',
+                pitch:'Flat',   pitchClass:'ok',   pitchHint:'Add more range',
+                power:'Soft',   powerClass:'ok',   powerHint:'Project more',
+                pause:'0×',     pauseClass:'ok',   pauseHint:'Add pauses',
+                polish:'55%',   polishClass:'ok',  polishHint:'Keep going' },
+    some:      { pace:'148', paceClass:'good', paceHint:'wpm — Steady',
+                pitch:'Varied', pitchClass:'good', pitchHint:'Natural range',
+                power:'Clear',  powerClass:'good', powerHint:'Good volume',
+                pause:'2×',     pauseClass:'great',pauseHint:'Well placed',
+                polish:'72%',   polishClass:'good',polishHint:'Solid delivery' },
+    confident: { pace:'162', paceClass:'great', paceHint:'wpm — Crisp',
+                pitch:'Rich',   pitchClass:'great', pitchHint:'Expressive',
+                power:'Strong', powerClass:'great', powerHint:'Commands room',
+                pause:'4×',     pauseClass:'great', pauseHint:'Strategic',
+                polish:'89%',   polishClass:'great',polishHint:'Sharp delivery' },
+  };
+
+  const d = data[lvl];
+  document.getElementById('pPace').textContent   = d.pace;
+  document.getElementById('pPace').className     = 'p-score ' + d.paceClass;
+  document.getElementById('pPace').nextElementSibling.textContent = d.paceHint;
+
+  document.getElementById('pPitch').textContent  = d.pitch;
+  document.getElementById('pPitch').className    = 'p-score ' + d.pitchClass;
+  document.getElementById('pPitch').nextElementSibling.textContent = d.pitchHint;
+
+  document.getElementById('pPower').textContent  = d.power;
+  document.getElementById('pPower').className    = 'p-score ' + d.powerClass;
+  document.getElementById('pPower').nextElementSibling.textContent = d.powerHint;
+
+  document.getElementById('pPause').textContent  = d.pause;
+  document.getElementById('pPause').className    = 'p-score ' + d.pauseClass;
+  document.getElementById('pPause').nextElementSibling.textContent = d.pauseHint;
+
+  document.getElementById('pPolish').textContent = d.polish;
+  document.getElementById('pPolish').className   = 'p-score ' + d.polishClass;
+  document.getElementById('pPolish').nextElementSibling.textContent = d.polishHint;
+}
+
+// ── Results screen setup ─────────────────────────────────────────
+function setupResults() {
+  const videoSection = document.getElementById('videoAnalysisSection');
+  const fivePSection = document.getElementById('fivePSection');
+
+  if (practiceMode === 'video') {
+    videoSection.style.display = 'block';
+    fivePSection.style.display = 'block';
+    const lvl = selectedLevel || 'some';
+    const ecMap    = { beginner: '64%', some: '78%', confident: '88%' };
+    const ecSubMap = { beginner: 'Looked away often — keep the camera in your sightline', some: 'Held through most of your response', confident: 'Consistent and confident throughout' };
+    const faceMap  = { beginner: 'Neutral', some: 'Warm', confident: 'Engaged' };
+    const faceSubMap = { beginner: 'Try to let your expression match your words', some: 'Good — small smiles at the right moments', confident: 'Excellent — face reinforced your message' };
+    document.getElementById('eyeContactScore').textContent = ecMap[lvl];
+    document.getElementById('eyeContactSub').textContent   = ecSubMap[lvl];
+    document.getElementById('facialScore').textContent     = faceMap[lvl];
+    document.getElementById('facialSub').textContent       = faceSubMap[lvl];
+  } else {
+    videoSection.style.display = 'none';
+    fivePSection.style.display = (practiceMode === 'voice') ? 'block' : 'none';
+  }
+
+  set5PScores(selectedLevel);
+}
+
+// ── Match screen setup ──────────────────────────────────────────
+function setupMatch() {
+  matchRecording = false;
+  matchSeconds = 30;
+  clearInterval(matchTimer);
+
+  const usedPrompt = document.getElementById('promptText').textContent;
+  const available = PROMPTS.filter(p => p !== usedPrompt);
+  document.getElementById('matchPromptText').textContent = available[Math.floor(Math.random() * available.length)];
+
+  const matchVoice = document.getElementById('matchVoiceWrap');
+  const matchText = document.getElementById('matchTextWrap');
+  document.getElementById('matchNext').style.display = 'none';
+
+  if (practiceMode === 'voice' || practiceMode === 'video') {
+    matchVoice.style.display = 'block';
+    matchText.style.display = 'none';
+    document.getElementById('matchRecordBtn').classList.remove('recording');
+    document.getElementById('matchRecordBtn').textContent = '🎙️';
+    document.getElementById('matchRecordLabel').textContent = 'Tap when ready to speak';
+    document.getElementById('matchPromptHint').textContent = "You'll each speak for 30 seconds — then vote on whose response felt more genuine.";
+  } else {
+    matchVoice.style.display = 'none';
+    matchText.style.display = 'block';
+    document.getElementById('matchTextResponse').value = '';
+    document.getElementById('matchCharCount').textContent = '0';
+    document.getElementById('matchTextSubmitBtn').disabled = true;
+    document.getElementById('matchPromptHint').textContent = "Write your response below — then your match will respond, and you'll vote on whose felt most genuine.";
+  }
+}
+
+// ── Match text mode ─────────────────────────────────────────────
+function onMatchTextInput() {
+  const val = document.getElementById('matchTextResponse').value.trim();
+  const words = val ? val.split(/\s+/).length : 0;
+  document.getElementById('matchCharCount').textContent = words;
+  document.getElementById('matchTextSubmitBtn').disabled = words < 5;
+}
+
+function submitMatchText() {
+  document.getElementById('matchTextSubmitBtn').disabled = true;
+  document.getElementById('matchTextSubmitBtn').textContent = 'Submitted ✓';
+  document.getElementById('matchTextResponse').readOnly = true;
+
+  setTimeout(() => {
+    document.getElementById('matchTextSubmitBtn').textContent = 'Waiting for your match…';
+  }, 400);
+
+  setTimeout(() => {
+    document.getElementById('matchTextSubmitBtn').textContent = 'Both responses in. Session complete!';
+    document.getElementById('matchNext').style.display = 'inline-flex';
+  }, 2200);
+}
+
+// ── Match voice mode ────────────────────────────────────────────
+function toggleMatchRecord() {
+  if (!matchRecording) {
+    matchRecording = true;
+    const btn = document.getElementById('matchRecordBtn');
+    btn.classList.add('recording');
+    btn.textContent = '⏹️';
+    document.getElementById('matchRecordLabel').textContent = 'Recording… 30s';
+
+    matchTimer = setInterval(() => {
+      matchSeconds--;
+      document.getElementById('matchRecordLabel').textContent = `Recording… ${matchSeconds}s`;
+      if (matchSeconds <= 0) finishMatchRecord();
+    }, 1000);
+  } else {
+    finishMatchRecord();
+  }
+}
+
+function finishMatchRecord() {
+  clearInterval(matchTimer);
+  matchRecording = false;
+  const btn = document.getElementById('matchRecordBtn');
+  btn.classList.remove('recording');
+  btn.textContent = '✅';
+  document.getElementById('matchRecordLabel').textContent = 'Waiting for your match to finish…';
+
+  setTimeout(() => {
+    document.getElementById('matchRecordLabel').textContent = 'Both responses recorded. Session complete!';
+    document.getElementById('matchNext').style.display = 'inline-flex';
+  }, 1800);
+}
+
+// ── End / restart ───────────────────────────────────────────────
+function endSession() {
+  goToScreen(6);
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById('dot' + i).className = 'step-dot done';
+  }
+}
+
+function restartSession() {
+  practiceMode = null;
+  selectedLevel = null;
+  videoRecording = false;
+  clearInterval(videoTimer);
+  clearInterval(eyeInterval);
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('modeNext').disabled = true;
+  document.getElementById('levelNext').disabled = true;
+  goToScreen(1);
+}
+</script>
+</body>
+</html>
